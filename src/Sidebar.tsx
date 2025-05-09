@@ -1,13 +1,16 @@
-import { LogOut, Users, Box, Truck } from "lucide-react";
+import { LogOut, Users, Box, Truck, Warehouse } from "lucide-react"; // Asegúrate de que Warehouse esté disponible o usa otro ícono
 import "./styles.css";
 
 type Props = {
   user: {
+    idUsuario: number;
     nombreUsuario: string;
     cargo: string;
     rol: string;
   };
-  onSectionChange: (section: "usuarios" | "productos" | "proveedores") => void;
+  onSectionChange: (
+    section: "usuarios" | "productos" | "proveedores" | "almacen"
+  ) => void;
   activeSection: string;
 };
 
@@ -19,6 +22,7 @@ const Sidebar = ({ user, onSectionChange, activeSection }: Props) => {
   const navItems = [
     { label: "Usuarios", value: "usuarios", icon: <Users className="w-4 h-4" /> },
     { label: "Productos", value: "productos", icon: <Box className="w-4 h-4" /> },
+    { label: "Almacén", value: "almacen", icon: <Warehouse className="w-4 h-4" /> }, // Nueva opción
     ...(puedeVerProveedores
       ? [{ label: "Proveedores", value: "proveedores", icon: <Truck className="w-4 h-4" /> }]
       : []),
@@ -37,14 +41,16 @@ const Sidebar = ({ user, onSectionChange, activeSection }: Props) => {
             {user.nombreUsuario.charAt(0).toUpperCase()}
           </div>
           <h2 className="mt-3 text-lg font-semibold">{user.nombreUsuario}</h2>
-          <p className="text-sm text-gray-500">{user.cargo}</p>
+          <p className="text-sm text-gray-500">{user.rol}</p>
         </div>
 
         <nav className="flex flex-col gap-2">
           {navItems.map((item) => (
             <button
               key={item.value}
-              onClick={() => onSectionChange(item.value as "usuarios" | "productos" | "proveedores")}
+              onClick={() =>
+                onSectionChange(item.value as "usuarios" | "productos" | "proveedores" | "almacen")
+              }
               className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all
                 ${
                   activeSection === item.value

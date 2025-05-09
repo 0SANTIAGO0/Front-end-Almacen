@@ -41,9 +41,9 @@ const SupplierTable = ({ user }: { user: Usuario }) => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-6 flex flex-col items-center gap-6">
       {/* Filtros en tarjeta flotante */}
-      <div id="barraSupplier" className="bg-white p-6 rounded-lg shadow-lg border border-gray-200 mb-6">
+      <div id="barraSupplier" className="w-4/5 bg-white p-6 rounded-2xl shadow-lg">
         <div className="flex flex-wrap gap-4 items-end">
           <div className="flex-1">
             <label className="text-sm font-semibold text-gray-700 block mb-1">Nombre Proveedor</label>
@@ -85,8 +85,8 @@ const SupplierTable = ({ user }: { user: Usuario }) => {
       </div>
 
       {/* Tabla en tarjeta flotante */}
-      <div id="tableSupplierdd" className="overflow-x-auto bg-white rounded-lg shadow-lg border border-gray-200 mb-6">
-        <table id="tableSupplier" className="min-w-full table-auto text-sm text-gray-800">
+      <div id="tableSupplier" className="w-4/5 bg-white rounded-2xl shadow-lg overflow-x-auto">
+        <table className="w-full text-sm text-center table-auto">
           <thead className="bg-gray-100 text-gray-700 uppercase">
             <tr>
               <th className="px-4 py-3 border-b">Nombre</th>
@@ -96,7 +96,7 @@ const SupplierTable = ({ user }: { user: Usuario }) => {
               {puedeModificar && <th className="px-4 py-3 border-b">Acciones</th>}
             </tr>
           </thead>
-          <tbody>
+          <tbody className="text-gray-800" >
             {proveedores.map((proveedor) => (
               <tr key={proveedor.idProveedor} className="even:bg-gray-50">
                 <td className="px-4 py-2 border-b">{proveedor.nombreProveedor}</td>

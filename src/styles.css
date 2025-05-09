@@ -21,6 +21,14 @@ body {
   width: 95% !important ;
 }
 
+#PedidosFiltro{
+  width: 95% !important ;
+}
+
+#PedidosTable{
+  width: 95% !important ;
+}
+
 #root{
   width: 100% !important ;
   height: 100% !important ;

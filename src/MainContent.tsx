@@ -6,13 +6,15 @@ import UserForm from "./UserForm";
 import ProductForm from "./ProductForm";
 import SupplierForm from "./SupplierForm";
 import { Usuario } from "./types";
+import PedidosTable from "./PedidosTable";
 import './index.css';
 import "./styles.css";
 
 type Props = {
   user: Usuario;
-  section: "usuarios" | "productos" | "proveedores";
+  section: "usuarios" | "productos" | "proveedores" | "almacen";
 };
+
 
 const MainContent = ({ user, section }: Props) => {
   const [showCreate, setShowCreate] = useState(false);
@@ -29,10 +31,13 @@ const MainContent = ({ user, section }: Props) => {
         return <ProductTable user={user} />;
       case "proveedores":
         return <SupplierTable user={user} />;
+      case "almacen":
+        return <PedidosTable user={user} />;
       default:
         return null;
     }
   };
+  
 
   const renderDialog = () => {
     switch (section) {
@@ -50,8 +55,10 @@ const MainContent = ({ user, section }: Props) => {
   const sectionTitle = {
     usuarios: "Listado de Usuarios",
     productos: "Listado de Productos",
-    proveedores: "Listado de Proveedores"
+    proveedores: "Listado de Proveedores",
+    almacen: "Listado de Pedidos"
   };
+  
 
   return (
     <div className="flex-1 p-4">
