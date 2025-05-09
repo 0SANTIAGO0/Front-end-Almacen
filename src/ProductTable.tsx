@@ -11,25 +11,43 @@ import {
 
 const ProductTable = ({ user }: { user: Usuario }) => {
   const [productos, setProductos] = useState<Producto[]>([]);
-  const [filtros, setFiltros] = useState({ id: "", nombre: "", stock: "" });
+  const [filtros, setFiltros] = useState({ id: "", nombre: "", stock: "", codigoPedido: "" });
   const [mostrarModal, setMostrarModal] = useState(false);
   const [productoSeleccionado, setProductoSeleccionado] = useState<Producto | null>(null);
+
+  const [paginaActual, setPaginaActual] = useState(1);
+  const productosPorPagina = 10;
 
   const fetchData = async () => {
     const res = await getProductos();
     const filtrados = res.data.filter((producto: Producto) =>
       (filtros.id === "" || producto.idProducto!.toString().includes(filtros.id)) &&
       producto.nombreProducto.toLowerCase().includes(filtros.nombre.toLowerCase()) &&
-      (filtros.stock === "" || producto.stockMinimo.toString().includes(filtros.stock))
+      (filtros.stock === "" || producto.stockMinimo.toString().includes(filtros.stock)) &&
+      (filtros.codigoPedido === "" || (producto.codigoPedido !== undefined && producto.codigoPedido !== null && producto.codigoPedido.toString().toLowerCase().includes(filtros.codigoPedido.toLowerCase())))
     );
     setProductos(filtrados);
+    setPaginaActual(1); // Reset a la primera página al filtrar
   };
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  const puedeModificar = ["supervisor", "almacenero", "administrador", "gerente_almacen"].includes(user.rol.toLowerCase());
+  const puedeModificar = ["control_calidad", "supervisor", "almacenero", "administrador", "gerente_almacen"].includes(user.rol.toLowerCase());
+  const puedeEliminar = ["supervisor", "almacenero", "administrador", "gerente_almacen"].includes(user.rol.toLowerCase());
+
+  // Lógica de paginación
+  const indiceInicio = (paginaActual - 1) * productosPorPagina;
+  const indiceFin = indiceInicio + productosPorPagina;
+  const productosPaginados = productos.slice(indiceInicio, indiceFin);
+  const totalPaginas = Math.ceil(productos.length / productosPorPagina);
+
+  const cambiarPagina = (nuevaPagina: number) => {
+    if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
+      setPaginaActual(nuevaPagina);
+    }
+  };
 
   return (
     <div className="p-6 flex flex-col items-center gap-6">
@@ -66,6 +84,16 @@ const ProductTable = ({ user }: { user: Usuario }) => {
               onChange={(e) => setFiltros({ ...filtros, stock: e.target.value })}
             />
           </div>
+          <div className="flex-1 min-w-[150px]">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Código de Pedido</label>
+            <input
+              type="text"
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Código de pedido"
+              value={filtros.codigoPedido}
+              onChange={(e) => setFiltros({ ...filtros, codigoPedido: e.target.value })}
+            />
+          </div>
           <button
             className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
             onClick={fetchData}
@@ -99,49 +127,94 @@ const ProductTable = ({ user }: { user: Usuario }) => {
               <th className="px-4 py-3">Estado</th>
               <th className="px-4 py-3">Stock Actual</th>
               <th className="px-4 py-3">Stock Mínimo</th>
+              <th className="px-4 py-3">Código de Pedido</th>
               {puedeModificar && <th className="px-4 py-3">Acciones</th>}
+              {puedeEliminar && <th className="px-4 py-3"></th>}
             </tr>
           </thead>
           <tbody className="text-gray-800">
-            {productos.map((producto) => (
-              <tr key={producto.idProducto} className="even:bg-gray-50">
-                <td className="px-4 py-3">{producto.idProducto}</td>
-                <td className="px-4 py-3">{producto.nombreProducto}</td>
-                <td className="px-4 py-3">{producto.descripcion}</td>
-                <td className="px-4 py-3">
-                  {producto.estado ? (
-                    <span className="text-green-600 font-semibold">Activo</span>
-                  ) : (
-                    <span className="text-red-500 font-semibold">Inactivo</span>
-                  )}
+            {productosPaginados.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={puedeModificar && puedeEliminar ? 9 : puedeModificar || puedeEliminar ? 8 : 7}
+                  className="px-4 py-6 text-center text-gray-500 italic"
+                >
+                  No se encontraron datos con los filtros ingresados.
                 </td>
-                <td className="px-4 py-3">{producto.stockActual}</td>
-                <td className="px-4 py-3">{producto.stockMinimo}</td>
-                {puedeModificar && (
-                  <td className="px-4 py-3 space-x-2">
-                    <button
-                      className="p-1 bg-yellow-400 text-white rounded hover:bg-yellow-500"
-                      onClick={() => {
-                        setProductoSeleccionado(producto);
-                        setMostrarModal(true);
-                      }}
-                      title="Editar"
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                    <button
-                      className="p-1 bg-red-600 text-white rounded hover:bg-red-700"
-                      onClick={() => eliminarProducto(producto.idProducto!).then(fetchData)}
-                      title="Eliminar"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </td>
-                )}
               </tr>
-            ))}
+            ) : (
+              productosPaginados.map((producto) => (
+                <tr key={producto.idProducto} className="even:bg-gray-50">
+                  <td className="px-4 py-3">{producto.idProducto}</td>
+                  <td className="px-4 py-3">{producto.nombreProducto}</td>
+                  <td className="px-4 py-3">{producto.descripcion}</td>
+                  <td className="px-4 py-3">
+                    {producto.estado ? (
+                      <span className="text-green-600 font-semibold">Activo</span>
+                    ) : (
+                      <span className="text-red-500 font-semibold">Inactivo</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">{producto.stockActual}</td>
+                  <td className="px-4 py-3">{producto.stockMinimo}</td>
+                  <td className="px-4 py-3">{producto.codigoPedido}</td>
+                  {puedeModificar && (
+                    <td className="px-4 py-3 space-x-2">
+                      <button
+                        className="p-1 bg-yellow-400 text-white rounded hover:bg-yellow-500"
+                        onClick={() => {
+                          setProductoSeleccionado(producto);
+                          setMostrarModal(true);
+                        }}
+                        title="Editar"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                    </td>
+                  )}
+                  {puedeEliminar && (
+                    <td className="px-4 py-3 space-x-2">
+                      <button
+                        className="p-1 bg-red-600 text-white rounded hover:bg-red-700"
+                        onClick={() => eliminarProducto(producto.idProducto!).then(fetchData)}
+                        title="Eliminar"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
+      </div>
+
+      {/* Paginación */}
+      <div className="mt-4 flex justify-center items-center gap-2">
+        <button
+          onClick={() => cambiarPagina(paginaActual - 1)}
+          disabled={paginaActual === 1}
+          className="px-3 py-1 bg-gray-200 text-sm rounded disabled:opacity-50"
+        >
+          Anterior
+        </button>
+        {Array.from({ length: totalPaginas }, (_, i) => (
+          <button
+            key={i + 1}
+            onClick={() => cambiarPagina(i + 1)}
+            className={`px-3 py-1 text-sm rounded ${paginaActual === i + 1 ? "bg-blue-600 text-white" : "bg-gray-100"}`}
+          >
+            {i + 1}
+          </button>
+        ))}
+        <button
+          onClick={() => cambiarPagina(paginaActual + 1)}
+          disabled={paginaActual === totalPaginas}
+          className="px-3 py-1 bg-gray-200 text-sm rounded disabled:opacity-50"
+        >
+          Siguiente
+        </button>
       </div>
 
       {/* Modal */}

@@ -1,4 +1,4 @@
-import { LogOut, Users, Box, Truck, Warehouse } from "lucide-react"; // Asegúrate de que Warehouse esté disponible o usa otro ícono
+import { LogOut, Users, Box, Truck, Warehouse, Home as HomeIcon } from "lucide-react";
 import "./styles.css";
 
 type Props = {
@@ -9,21 +9,23 @@ type Props = {
     rol: string;
   };
   onSectionChange: (
-    section: "usuarios" | "productos" | "proveedores" | "almacen"
+    section: "home" | "usuarios" | "productos" | "proveedores" | "almacen"
   ) => void;
   activeSection: string;
 };
 
 const Sidebar = ({ user, onSectionChange, activeSection }: Props) => {
-  const puedeVerProveedores = ["supervisor", "administrador", "gerente_almacen"].includes(
-    user.rol.toLowerCase()
-  );
+  const rol = user.rol.toLowerCase();
+  const tieneAccesoRestricto = ["supervisor", "administrador", "gerente_almacen"].includes(rol);
 
   const navItems = [
-    { label: "Usuarios", value: "usuarios", icon: <Users className="w-4 h-4" /> },
+    { label: "Inicio", value: "home", icon: <HomeIcon className="w-4 h-4" /> },
+    ...(tieneAccesoRestricto
+      ? [{ label: "Usuarios", value: "usuarios", icon: <Users className="w-4 h-4" /> }]
+      : []),
     { label: "Productos", value: "productos", icon: <Box className="w-4 h-4" /> },
-    { label: "Almacén", value: "almacen", icon: <Warehouse className="w-4 h-4" /> }, // Nueva opción
-    ...(puedeVerProveedores
+    { label: "Almacén", value: "almacen", icon: <Warehouse className="w-4 h-4" /> },
+    ...(tieneAccesoRestricto
       ? [{ label: "Proveedores", value: "proveedores", icon: <Truck className="w-4 h-4" /> }]
       : []),
   ];
@@ -49,7 +51,7 @@ const Sidebar = ({ user, onSectionChange, activeSection }: Props) => {
             <button
               key={item.value}
               onClick={() =>
-                onSectionChange(item.value as "usuarios" | "productos" | "proveedores" | "almacen")
+                onSectionChange(item.value as "home" | "usuarios" | "productos" | "proveedores" | "almacen")
               }
               className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all
                 ${

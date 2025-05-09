@@ -38,11 +38,18 @@ const PedidosTable = ({ user }: PedidosTableProps) => {
   const fetchData = async () => {
     try {
       const res = await getPedidos(); // Obtener pedidos desde la API
-      const filtrados = res.data.filter((p: Pedido) =>
-        (p.nombreProveedor?.toString() || "").includes(filtros.proveedor.toLowerCase()) &&
-        (p.nombreUsuario?.toString() || "").includes(filtros.usuario.toLowerCase()) &&
-        (filtros.estado ? p.estado?.toLowerCase() === filtros.estado.toLowerCase() : true)
-      );
+      const filtrados = res.data.filter((p: Pedido) => {
+        const proveedor = (p.nombreProveedor || "").toLowerCase();
+        const usuario = (p.nombreUsuario || "").toLowerCase();
+        const estado = (p.estado || "").toLowerCase();
+        
+        return (
+          proveedor.includes(filtros.proveedor.toLowerCase()) &&
+          usuario.includes(filtros.usuario.toLowerCase()) &&
+          (filtros.estado ? estado === filtros.estado.toLowerCase() : true)
+        );
+      });
+      
       setPedidos(filtrados);
     } catch (error) {
       console.error("Error al obtener los pedidos:", error);
@@ -53,7 +60,8 @@ const PedidosTable = ({ user }: PedidosTableProps) => {
     fetchData(); // Obtener datos cuando el componente se monta
   }, []);
 
-  const puedeModificar = ["administrador", "gerente_almacen"].includes(user.rol.toLowerCase());
+  const puedeModificar = ["control_calidad","supervisor","almacenero","administrador", "gerente_almacen"].includes(user.rol.toLowerCase());
+  const puedeEliminar = ["administrador", "gerente_almacen"].includes(user.rol.toLowerCase());
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -124,7 +132,7 @@ const PedidosTable = ({ user }: PedidosTableProps) => {
           >
             <Download className="w-5 h-5" />
           </button>
-          {puedeModificar && (
+          {puedeEliminar && (
             <button
               className="bg-green-600 text-white p-2 rounded hover:bg-green-700 transition"
               onClick={() => {
@@ -141,50 +149,59 @@ const PedidosTable = ({ user }: PedidosTableProps) => {
 
       {/* Tabla */}
       <div id="PedidosTable" className="w-4/5 bg-white rounded-2xl shadow-lg overflow-x-auto">
-        <table className="w-full text-sm text-center">
-          <thead className="bg-gray-100 text-gray-700 uppercase">
-            <tr>
-              <th className="px-4 py-3">Proveedor</th>
-              <th className="px-4 py-3">Fecha Recepción</th>
-              <th className="px-4 py-3">Estado</th>
-              <th className="px-4 py-3">Observación</th>
-              <th className="px-4 py-3">Usuario</th>
-              {puedeModificar && <th className="px-4 py-3">Acciones</th>}
-            </tr>
-          </thead>
-          <tbody className="text-gray-800">
-            {pedidos.map((pedido) => (
-              <tr key={pedido.id} className="even:bg-gray-50">
-                <td className="px-4 py-3">{pedido.nombreProveedor}</td>
-                <td className="px-4 py-3">{pedido.fechaRecepcion}</td>
-                <td className="px-4 py-3 capitalize">{pedido.estado}</td>
-                <td className="px-4 py-3">{pedido.observacion}</td>
-                <td className="px-4 py-3">{pedido.nombreUsuario}</td>
-                {puedeModificar && (
-                  <td className="px-4 py-3 space-x-2">
-                    <button
-                      className="p-1 bg-yellow-400 text-white rounded hover:bg-yellow-500"
-                      onClick={() => {
-                        setSelectedPedido(pedido);
-                        setShowForm(true);
-                      }}
-                      title="Editar"
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                    <button
-                      className="p-1 bg-red-600 text-white rounded hover:bg-red-700"
-                      onClick={() => handleEliminarPedido(pedido.idPedido)} // Usando `id` según la interfaz `Pedido`
-                      title="Eliminar"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </td>
-                )}
+        {pedidos.length === 0 ? (
+          <div className="p-4 text-center text-gray-600">No se encontraron datos con los filtros ingresados.</div>
+        ) : (
+          <table className="w-full text-sm text-center">
+            <thead className="bg-gray-100 text-gray-700 uppercase">
+              <tr>
+                <th className="px-4 py-3">Proveedor</th>
+                <th className="px-4 py-3">Fecha Recepción</th>
+                <th className="px-4 py-3">Estado</th>
+                <th className="px-4 py-3">Observación</th>
+                <th className="px-4 py-3">Usuario</th>
+                {puedeModificar && <th className="px-4 py-3">Acciones</th>}
+                {puedeEliminar && <th className="px-4 py-3"></th>}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="text-gray-800">
+              {pedidos.map((pedido) => (
+                <tr key={pedido.id} className="even:bg-gray-50">
+                  <td className="px-4 py-3">{pedido.nombreProveedor}</td>
+                  <td className="px-4 py-3">{pedido.fechaRecepcion}</td>
+                  <td className="px-4 py-3 capitalize">{pedido.estado}</td>
+                  <td className="px-4 py-3">{pedido.observacion}</td>
+                  <td className="px-4 py-3">{pedido.nombreUsuario}</td>
+                  {puedeModificar && (
+                    <td className="px-4 py-3 space-x-2">
+                      <button
+                        className="p-1 bg-yellow-400 text-white rounded hover:bg-yellow-500"
+                        onClick={() => {
+                          setSelectedPedido(pedido);
+                          setShowForm(true);
+                        }}
+                        title="Editar"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                    </td>
+                  )}
+                  {puedeEliminar && (
+                    <td>
+                      <button
+                        className="p-1 bg-red-600 text-white rounded hover:bg-red-700"
+                        onClick={() => handleEliminarPedido(pedido.idPedido)} // Usando `id` según la interfaz `Pedido`
+                        title="Eliminar"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       {/* Formulario modal */}

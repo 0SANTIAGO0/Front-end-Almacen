@@ -16,6 +16,7 @@ const ProductForm = ({ onClose, onSuccess, initialData }: ProductFormProps) => {
       estado: true,
       stockActual: 0,
       stockMinimo: 0,
+      codigoPedido:0,
     }
   );
 
@@ -97,6 +98,18 @@ const ProductForm = ({ onClose, onSuccess, initialData }: ProductFormProps) => {
               name="stockMinimo"
               value={form.stockMinimo}
               onChange={(e) => setForm({ ...form, stockMinimo: +e.target.value })}
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+              placeholder="Stock mínimo"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Codigo de Pedido</label>
+            <input
+              type="number"
+              name="codigoPedido"
+              value={form.codigoPedido}
+              onChange={(e) => setForm({ ...form, codigoPedido: +e.target.value })}
               className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
               placeholder="Stock mínimo"
             />

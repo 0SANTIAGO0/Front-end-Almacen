@@ -10,11 +10,20 @@ const SupplierTable = ({ user }: { user: Usuario }) => {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [proveedorSeleccionado, setProveedorSeleccionado] = useState<Proveedor | null>(null);
 
-  const puedeModificar = ["supervisor", "almacenero", "administrador", "gerente_almacen"].includes(user.rol.toLowerCase());
+  const puedeModificar = ["control_calidad", "supervisor", "administrador", "gerente_almacen"].includes(user.rol.toLowerCase());
+  const puedeEliminar = ["administrador", "gerente_almacen"].includes(user.rol.toLowerCase());
 
   const fetchData = async () => {
-    const res = await getProveedores();
-    setProveedores(res.data);
+    try {
+      const res = await getProveedores(); // Obtener proveedores desde la API
+      const filtrados = res.data.filter((p: Proveedor) =>
+        (p.nombreProveedor?.toLowerCase() || "").includes(filtros.nombre.toLowerCase()) &&
+        (p.contacto?.toLowerCase() || "").includes(filtros.contacto.toLowerCase())
+      );
+      setProveedores(filtrados);
+    } catch (error) {
+      console.error("Error al obtener los proveedores:", error);
+    }
   };
 
   useEffect(() => {
@@ -94,33 +103,46 @@ const SupplierTable = ({ user }: { user: Usuario }) => {
               <th className="px-4 py-3 border-b">Teléfono</th>
               <th className="px-4 py-3 border-b">Dirección</th>
               {puedeModificar && <th className="px-4 py-3 border-b">Acciones</th>}
+              {puedeEliminar && <th className="px-4 py-3 border-b"></th>}
             </tr>
           </thead>
-          <tbody className="text-gray-800" >
-            {proveedores.map((proveedor) => (
-              <tr key={proveedor.idProveedor} className="even:bg-gray-50">
-                <td className="px-4 py-2 border-b">{proveedor.nombreProveedor}</td>
-                <td className="px-4 py-2 border-b">{proveedor.contacto}</td>
-                <td className="px-4 py-2 border-b">{proveedor.telefono}</td>
-                <td className="px-4 py-2 border-b">{proveedor.direccion}</td>
-                {puedeModificar && (
-                  <td className="px-4 py-2 border-b space-x-2">
-                    <button
-                      onClick={() => abrirModal(proveedor)}
-                      className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
-                    >
-                      <FaEdit />
-                    </button>
-                    <button
-                      onClick={() => handleEliminar(proveedor.idProveedor!)}
-                      className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                    >
-                      <FaTrashAlt />
-                    </button>
-                  </td>
-                )}
+          <tbody className="text-gray-800">
+            {proveedores.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="px-4 py-3 text-center text-gray-500">
+                  No se encontraron datos con los filtros ingresados
+                </td>
               </tr>
-            ))}
+            ) : (
+              proveedores.map((proveedor) => (
+                <tr key={proveedor.idProveedor} className="even:bg-gray-50">
+                  <td className="px-4 py-2 border-b">{proveedor.nombreProveedor}</td>
+                  <td className="px-4 py-2 border-b">{proveedor.contacto}</td>
+                  <td className="px-4 py-2 border-b">{proveedor.telefono}</td>
+                  <td className="px-4 py-2 border-b">{proveedor.direccion}</td>
+                  {puedeModificar && (
+                    <td className="px-4 py-2 border-b space-x-2">
+                      <button
+                        onClick={() => abrirModal(proveedor)}
+                        className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                      >
+                        <FaEdit />
+                      </button>
+                    </td>
+                  )}
+                  {puedeEliminar && (
+                    <td className="px-4 py-2 border-b space-x-2">
+                      <button
+                        onClick={() => handleEliminar(proveedor.idProveedor!)}
+                        className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                      >
+                        <FaTrashAlt />
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

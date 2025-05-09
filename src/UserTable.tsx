@@ -18,6 +18,7 @@ const UserTable = ({ user }: UserTableProps) => {
   const [filtros, setFiltros] = useState({ nombre: "", correo: "", rol: "" });
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState<Usuario | undefined>(undefined);
+  const [noResultados, setNoResultados] = useState(false); // Estado para mostrar el mensaje
 
   const fetchData = async () => {
     const res = await getUsuarios();
@@ -27,6 +28,7 @@ const UserTable = ({ user }: UserTableProps) => {
       (filtros.rol ? u.rol.toLowerCase() === filtros.rol.toLowerCase() : true)
     );
     setUsuarios(filtrados);
+    setNoResultados(filtrados.length === 0); // Establecer si no hay resultados
   };
 
   useEffect(() => {
@@ -154,8 +156,12 @@ const UserTable = ({ user }: UserTableProps) => {
             ))}
           </tbody>
         </table>
+        {/* Mensaje si no se encuentran resultados */}
       </div>
-
+        {noResultados && (
+            <div className="p-4 text-center text-gray-600">No se encontraron datos con los filtros ingresados.</div>
+          )}
+          
       {/* Modal */}
       {mostrarFormulario && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">

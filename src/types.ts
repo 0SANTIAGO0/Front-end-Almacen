@@ -5,6 +5,7 @@ export interface Producto {
     estado: boolean;  
     stockActual: number;
     stockMinimo: number;
+    codigoPedido: number;
   }
   
   export interface Usuario {

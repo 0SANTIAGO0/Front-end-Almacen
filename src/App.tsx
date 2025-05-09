@@ -12,18 +12,16 @@ type AppProps = {
 };
 
 const App = ({ user }: AppProps) => {
-  const [activeSection, setActiveSection] = useState<"usuarios" | "productos" | "proveedores">("usuarios");
+  const [activeSection, setActiveSection] = useState<"home" | "usuarios" | "productos" | "proveedores" | "almacen">("home");
 
   return (
     <div className="flex h-screen font-sans">
-      {/* Lógica: le indicas a TypeScript que `user` es tipo LoginResponseDto */}
       <Sidebar
         user={user as LoginResponseDto}
         onSectionChange={setActiveSection}
         activeSection={activeSection}
       />
 
-      {/* Lógica: le indicas a TypeScript que `user` es tipo Usuario */}
       <MainContent
         user={user as Usuario}
         section={activeSection}

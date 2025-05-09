@@ -5,26 +5,26 @@ import SupplierTable from "./SupplierTable";
 import UserForm from "./UserForm";
 import ProductForm from "./ProductForm";
 import SupplierForm from "./SupplierForm";
-import { Usuario } from "./types";
 import PedidosTable from "./PedidosTable";
-import './index.css';
+import Home from "./Home"; // Importar el nuevo componente
+import { Usuario } from "./types";
+import "./index.css";
 import "./styles.css";
 
 type Props = {
   user: Usuario;
-  section: "usuarios" | "productos" | "proveedores" | "almacen";
+  section: "home" | "usuarios" | "productos" | "proveedores" | "almacen";
 };
-
 
 const MainContent = ({ user, section }: Props) => {
   const [showCreate, setShowCreate] = useState(false);
 
-  const onSuccess = () => {
-    setShowCreate(false);
-  };
+  const onSuccess = () => setShowCreate(false);
 
   const renderTable = () => {
     switch (section) {
+      case "home":
+        return <Home user={user} />;
       case "usuarios":
         return <UserTable user={user} />;
       case "productos":
@@ -37,7 +37,6 @@ const MainContent = ({ user, section }: Props) => {
         return null;
     }
   };
-  
 
   const renderDialog = () => {
     switch (section) {
@@ -53,12 +52,12 @@ const MainContent = ({ user, section }: Props) => {
   };
 
   const sectionTitle = {
+    home: "Inicio",
     usuarios: "Listado de Usuarios",
     productos: "Listado de Productos",
     proveedores: "Listado de Proveedores",
     almacen: "Listado de Pedidos"
   };
-  
 
   return (
     <div className="flex-1 p-4">
