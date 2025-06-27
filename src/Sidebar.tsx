@@ -9,14 +9,14 @@ type Props = {
     rol: string;
   };
   onSectionChange: (
-    section: "home" | "usuarios" | "productos" | "proveedores" | "almacen"
+    section: "home" | "usuarios" | "productos" | "proveedores" | "movimientos" | "categorias"
   ) => void;
   activeSection: string;
 };
 
 const Sidebar = ({ user, onSectionChange, activeSection }: Props) => {
   const rol = user.rol.toLowerCase();
-  const tieneAccesoRestricto = ["supervisor", "administrador", "gerente_almacen"].includes(rol);
+  const tieneAccesoRestricto = ["supervisor", "administrador", "almacenero"].includes(rol);
 
   const navItems = [
     { label: "Inicio", value: "home", icon: <HomeIcon className="w-4 h-4" /> },
@@ -24,7 +24,8 @@ const Sidebar = ({ user, onSectionChange, activeSection }: Props) => {
       ? [{ label: "Usuarios", value: "usuarios", icon: <Users className="w-4 h-4" /> }]
       : []),
     { label: "Productos", value: "productos", icon: <Box className="w-4 h-4" /> },
-    { label: "Almacén", value: "almacen", icon: <Warehouse className="w-4 h-4" /> },
+    { label: "Categorías", value: "categorias", icon: <Box className="w-4 h-4" /> },
+    { label: "Movimientos", value: "movimientos", icon: <Warehouse className="w-4 h-4" /> },
     ...(tieneAccesoRestricto
       ? [{ label: "Proveedores", value: "proveedores", icon: <Truck className="w-4 h-4" /> }]
       : []),
@@ -51,7 +52,7 @@ const Sidebar = ({ user, onSectionChange, activeSection }: Props) => {
             <button
               key={item.value}
               onClick={() =>
-                onSectionChange(item.value as "home" | "usuarios" | "productos" | "proveedores" | "almacen")
+                onSectionChange(item.value as "home" | "usuarios" | "productos" | "proveedores" | "movimientos" | "categorias")
               }
               className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all
                 ${

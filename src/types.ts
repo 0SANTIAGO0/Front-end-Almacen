@@ -43,3 +43,20 @@ export interface Producto {
     observacion: string;
     idUsuario: number;
   }
+
+  export interface MovimientoStock {
+    id: number;
+    tipo: "ENTRADA" | "SALIDA";
+    cantidad: number;
+    fecha: string;
+    productoId: number;
+    usuarioId: number;
+    // puedes agregar más campos si tu modelo lo requiere
+  }
+
+  export interface Categoria {
+    idCategoria?: number;
+    nombreCategoria: string;
+    descripcion: string;
+  }
+  

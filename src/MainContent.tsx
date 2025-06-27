@@ -5,15 +5,18 @@ import SupplierTable from "./SupplierTable";
 import UserForm from "./UserForm";
 import ProductForm from "./ProductForm";
 import SupplierForm from "./SupplierForm";
-import PedidosTable from "./PedidosTable";
+
 import Home from "./Home"; // Importar el nuevo componente
 import { Usuario } from "./types";
 import "./index.css";
 import "./styles.css";
+import MovementStockTable from "./MovementStockTable";
+import CategoryTable from "./CategoryTable";
+import CategoryForm from "./CategoryForm";
 
 type Props = {
   user: Usuario;
-  section: "home" | "usuarios" | "productos" | "proveedores" | "almacen";
+  section: "home" | "usuarios" | "productos" | "proveedores" | "movimientos" | "categorias";
 };
 
 const MainContent = ({ user, section }: Props) => {
@@ -31,8 +34,10 @@ const MainContent = ({ user, section }: Props) => {
         return <ProductTable user={user} />;
       case "proveedores":
         return <SupplierTable user={user} />;
-      case "almacen":
-        return <PedidosTable user={user} />;
+      case "movimientos":
+        return <MovementStockTable user={user} />;
+      case "categorias":
+          return <CategoryTable user={user} />;
       default:
         return null;
     }
@@ -46,6 +51,10 @@ const MainContent = ({ user, section }: Props) => {
         return <ProductForm onClose={() => setShowCreate(false)} onSuccess={onSuccess} />;
       case "proveedores":
         return <SupplierForm onClose={() => setShowCreate(false)} onSuccess={onSuccess} />;
+      case "movimientos":
+        return <CategoryForm onClose={() => setShowCreate(false)} onSuccess={onSuccess} />;
+      case "categorias":
+        return <CategoryForm onClose={() => setShowCreate(false)} onSuccess={onSuccess} />;
       default:
         return null;
     }
@@ -56,7 +65,8 @@ const MainContent = ({ user, section }: Props) => {
     usuarios: "Listado de Usuarios",
     productos: "Listado de Productos",
     proveedores: "Listado de Proveedores",
-    almacen: "Listado de Pedidos"
+    movimientos: "Listado de Movimientos de Stock",
+    categorias: "Listado de Categorías"
   };
 
   return (
