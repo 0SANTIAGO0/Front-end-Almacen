@@ -59,4 +59,10 @@ export interface Producto {
     nombreCategoria: string;
     descripcion: string;
   }
-  
+
+  export interface Marca {
+    idMarca?: number;
+    nombreMarca: string;
+    paisOrigen?: string;
+    estado?: string;
+  }

@@ -1,6 +1,6 @@
 // api.ts
 import axios from "axios";
-import { Producto, Usuario, Proveedor, Pedido, PedidoCrear, MovimientoStock } from "../types"; // Asegúrate de tener la ruta correcta
+import { Producto, Usuario, Proveedor, Pedido, PedidoCrear, MovimientoStock, Categoria, Marca } from "../types"; // Asegúrate de tener la ruta correcta
 
 const api = axios.create({
   baseURL: "http://localhost:8080/api",
@@ -42,3 +42,11 @@ export const getCategorias = () => api.get<Categoria[]>("/categorias");
 export const crearCategoria = (data: Categoria) => api.post("/categorias", data);
 export const actualizarCategoria = (id: number, data: Categoria) => api.put(`/categorias/${id}`, data);
 export const eliminarCategoria = (id: number) => api.delete(`/categorias/${id}`);
+
+// MARCAS
+export const getMarcas = () => api.get<Marca[]>("/marcas");
+export const getMarcaById = (id: number) => api.get<Marca>(`/marcas/${id}`);
+export const createMarca = (marca: Marca) => api.post("/marcas", marca);
+export const updateMarca = (id: number, marca: Marca) => api.put(`/marcas/${id}`, marca);
+export const deleteMarca = (id: number) => api.delete(`/marcas/${id}`);
+

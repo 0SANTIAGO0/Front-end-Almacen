@@ -1,91 +1,176 @@
 import React, { useState } from "react";
+
+// Tablas
 import UserTable from "./UserTable";
 import ProductTable from "./ProductTable";
 import SupplierTable from "./SupplierTable";
+import MovementStockTable from "./MovementStockTable";
+import CategoryTable from "./CategoryTable";
+import PedidosTable from "./PedidosTable";
+import MarcaTable from "./MarcaTable";
+
+// Formularios
 import UserForm from "./UserForm";
 import ProductForm from "./ProductForm";
 import SupplierForm from "./SupplierForm";
+import CategoryForm from "./CategoryForm";
+import MarcaForm from "./MarcaForm";
 
-import Home from "./Home"; // Importar el nuevo componente
-import { Usuario } from "./types";
+// Otros
+import Home from "./Home";
+
+// Tipos
+import { Usuario, Marca } from "./types";
+
+// Estilos
 import "./index.css";
 import "./styles.css";
-import MovementStockTable from "./MovementStockTable";
-import CategoryTable from "./CategoryTable";
-import CategoryForm from "./CategoryForm";
 
 type Props = {
-  user: Usuario;
-  section: "home" | "usuarios" | "productos" | "proveedores" | "movimientos" | "categorias";
+    user: Usuario;
+    section:
+    | "home"
+    | "usuarios"
+    | "productos"
+    | "proveedores"
+    | "movimientos"
+    | "categorias"
+    | "almacen"
+    | "marcas";
 };
 
 const MainContent = ({ user, section }: Props) => {
-  const [showCreate, setShowCreate] = useState(false);
+    const [showCreate, setShowCreate] = useState(false);
+    const [marcaSeleccionada, setMarcaSeleccionada] = useState<Marca | null>(null);
+    const [refreshMarcasTrigger, setRefreshMarcasTrigger] = useState(0);
+    const [refreshProductosTrigger, setRefreshProductosTrigger] = useState(0);
 
-  const onSuccess = () => setShowCreate(false);
+    const onSuccess = () => {
+        setShowCreate(false);
+        setMarcaSeleccionada(null);
 
-  const renderTable = () => {
-    switch (section) {
-      case "home":
-        return <Home user={user} />;
-      case "usuarios":
-        return <UserTable user={user} />;
-      case "productos":
-        return <ProductTable user={user} />;
-      case "proveedores":
-        return <SupplierTable user={user} />;
-      case "movimientos":
-        return <MovementStockTable user={user} />;
-      case "categorias":
-          return <CategoryTable user={user} />;
-      default:
-        return null;
-    }
-  };
+        if (section === "marcas") {
+            setRefreshMarcasTrigger(prev => prev + 1);
+        }
 
-  const renderDialog = () => {
-    switch (section) {
-      case "usuarios":
-        return <UserForm onClose={() => setShowCreate(false)} onSuccess={onSuccess} />;
-      case "productos":
-        return <ProductForm onClose={() => setShowCreate(false)} onSuccess={onSuccess} />;
-      case "proveedores":
-        return <SupplierForm onClose={() => setShowCreate(false)} onSuccess={onSuccess} />;
-      case "movimientos":
-        return <CategoryForm onClose={() => setShowCreate(false)} onSuccess={onSuccess} />;
-      case "categorias":
-        return <CategoryForm onClose={() => setShowCreate(false)} onSuccess={onSuccess} />;
-      default:
-        return null;
-    }
-  };
+        if (section === "productos") {
+            setRefreshProductosTrigger(prev => prev + 1);
+        }
+    };
 
-  const sectionTitle = {
-    home: "Inicio",
-    usuarios: "Listado de Usuarios",
-    productos: "Listado de Productos",
-    proveedores: "Listado de Proveedores",
-    movimientos: "Listado de Movimientos de Stock",
-    categorias: "Listado de Categorías"
-  };
+    const handleOpenCreateMarcaModal = () => {
+        setMarcaSeleccionada(null);
+        setShowCreate(true);
+    };
 
-  return (
-    <div className="flex-1 p-4">
-      <div className="bg-white rounded-2xl shadow-lg p-6 h-full overflow-y-auto">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">{sectionTitle[section]}</h2>
+    const handleEditMarcaModal = (marca: Marca) => {
+        setMarcaSeleccionada(marca);
+        setShowCreate(true);
+    };
+
+    const renderTable = () => {
+        switch (section) {
+            case "home":
+                return <Home user={user} />;
+            case "usuarios":
+                return <UserTable user={user} />;
+            case "productos":
+                return <ProductTable user={user} refreshTrigger={refreshProductosTrigger} />;
+            case "proveedores":
+                return <SupplierTable user={user} />;
+            case "movimientos":
+                return <MovementStockTable user={user} />;
+            case "categorias":
+                return <CategoryTable user={user} />;
+            case "almacen":
+                return <PedidosTable user={user} />;
+            case "marcas":
+                return (
+                    <MarcaTable
+                        user={user}
+                        onOpenCreateModal={handleOpenCreateMarcaModal}
+                        onEditMarca={handleEditMarcaModal}
+                        refreshTrigger={refreshMarcasTrigger}
+                    />
+                );
+            default:
+                return null;
+        }
+    };
+
+    const renderDialog = () => {
+        switch (section) {
+            case "usuarios":
+                return <UserForm onClose={() => setShowCreate(false)} onSuccess={onSuccess} />;
+            case "productos":
+                return <ProductForm onClose={() => setShowCreate(false)} onSuccess={onSuccess} />;
+            case "proveedores":
+                return <SupplierForm onClose={() => setShowCreate(false)} onSuccess={onSuccess} />;
+            case "movimientos":
+            case "categorias":
+                return <CategoryForm onClose={() => setShowCreate(false)} onSuccess={onSuccess} />;
+            case "marcas":
+                return (
+                    <MarcaForm
+                        initialData={marcaSeleccionada || undefined}
+                        onClose={() => {
+                            setShowCreate(false);
+                            setMarcaSeleccionada(null);
+                        }}
+                        onSuccess={onSuccess}
+                    />
+                );
+            default:
+                return null;
+        }
+    };
+
+    const sectionTitle: Record<typeof section, string> = {
+        home: "Inicio",
+        usuarios: "Listado de Usuarios",
+        productos: "Listado de Productos",
+        proveedores: "Listado de Proveedores",
+        movimientos: "Listado de Movimientos de Stock",
+        categorias: "Listado de Categorías",
+        almacen: "Listado de Pedidos",
+        marcas: "Listado de Marcas",
+    };
+
+    const userRole = user.rol?.toLowerCase() || "";
+    const puedeCrearEnSeccionSuperior = (currentSection: string) => {
+        const rolesConPermiso = ["supervisor", "administrador", "gerente_almacen"];
+        const seccionesConBoton = ["usuarios", "productos", "proveedores", "marcas"];
+        return rolesConPermiso.includes(userRole) && seccionesConBoton.includes(currentSection);
+    };
+
+    return (
+        <div className="flex-1 p-4">
+            <div className="bg-white rounded-2xl shadow-lg p-6 h-full overflow-y-auto">
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-bold">{sectionTitle[section]}</h2>
+                    {puedeCrearEnSeccionSuperior(section) && (
+                        <button
+                            onClick={() => {
+                                setShowCreate(true);
+                                setMarcaSeleccionada(null);
+                            }}
+                            className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+                        >
+                            Crear Nuevo
+                        </button>
+                    )}
+                </div>
+
+                {renderTable()}
+
+                {showCreate && (
+                    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+                        {renderDialog()}
+                    </div>
+                )}
+            </div>
         </div>
-
-        {renderTable()}
-
-        {showCreate && (
-          <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-            {renderDialog()}
-          </div>
-        )}
-      </div>
-    </div>
-  );
+    );
 };
 
 export default MainContent;
