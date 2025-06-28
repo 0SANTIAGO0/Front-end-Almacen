@@ -9,7 +9,12 @@ const api = axios.create({
 // PRODUCTOS
 export const getProductos = () => api.get<Producto[]>("/productos");
 export const crearProducto = (data: Producto) => api.post("/productos", data);
-export const actualizarProducto = (id: number, data: Producto) => api.put(`/productos/${id}`, data);
+export const actualizarProducto = (id: number, data: Producto) => {
+  return api.put(`/productos/${id}`, {
+    ...data,
+    idProducto: id  // Asegura que el ID venga también en el body
+  });
+};
 export const eliminarProducto = (id: number) => api.delete(`/productos/${id}`);
 
 // USUARIOS
