@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import {
-  getMovimientos,
-  crearMovimiento,
-  actualizarMovimiento,
-  eliminarMovimiento
-} from "./services/api";
+import { getMovimientos, eliminarMovimiento } from "./services/api";
 import { MovimientoStock, Usuario } from "./types";
 import MovementForm from "./MovementForm";
 import { Search, Plus, Pencil, Trash2 } from "lucide-react";
 
 const MovementStockTable = ({ user }: { user: Usuario }) => {
   const [movimientos, setMovimientos] = useState<MovimientoStock[]>([]);
-  const [filtros, setFiltros] = useState({ tipo: "", productoId: "", usuarioId: "" });
+  const [filtros, setFiltros] = useState({
+    id: "",
+    tipoMovimiento: "",
+    producto: "",
+    usuario: ""
+  });
   const [mostrarModal, setMostrarModal] = useState(false);
   const [movimientoSeleccionado, setMovimientoSeleccionado] = useState<MovimientoStock | null>(null);
 
@@ -23,11 +23,16 @@ const MovementStockTable = ({ user }: { user: Usuario }) => {
 
   const fetchData = async () => {
     const res = await getMovimientos();
-    const filtrados = res.data.filter((movimiento) =>
-      (filtros.tipo === "" || movimiento.tipo.includes(filtros.tipo.toUpperCase())) &&
-      (filtros.productoId === "" || movimiento.productoId.toString().includes(filtros.productoId)) &&
-      (filtros.usuarioId === "" || movimiento.usuarioId.toString().includes(filtros.usuarioId))
+
+    console.log(res.data);
+
+    const filtrados = res.data.filter((m: MovimientoStock) =>
+      (filtros.id === "" || m.idMovimiento.toString().includes(filtros.id)) &&
+      m.tipoMovimiento?.toLowerCase().includes(filtros.tipoMovimiento.toLowerCase()) &&
+      m.nombreProducto?.toLowerCase().includes(filtros.producto.toLowerCase()) &&
+      m.realizadoPor?.toLowerCase().includes(filtros.usuario.toLowerCase())
     );
+
     setMovimientos(filtrados);
     setPaginaActual(1);
   };
@@ -54,33 +59,48 @@ const MovementStockTable = ({ user }: { user: Usuario }) => {
         <div className="flex flex-wrap items-end gap-4">
           <input
             type="text"
-            placeholder="Tipo (ENTRADA o SALIDA)"
-            value={filtros.tipo}
-            onChange={(e) => setFiltros({ ...filtros, tipo: e.target.value })}
+            placeholder="ID Movimiento"
+            value={filtros.id}
+            onChange={(e) => setFiltros({ ...filtros, id: e.target.value })}
             className="min-w-[150px] border border-gray-300 rounded px-3 py-2 text-sm"
           />
           <input
-            type="number"
-            placeholder="Producto ID"
-            value={filtros.productoId}
-            onChange={(e) => setFiltros({ ...filtros, productoId: e.target.value })}
+            type="text"
+            placeholder="Tipo Movimiento"
+            value={filtros.tipoMovimiento}
+            onChange={(e) => setFiltros({ ...filtros, tipoMovimiento: e.target.value })}
             className="min-w-[150px] border border-gray-300 rounded px-3 py-2 text-sm"
           />
           <input
-            type="number"
-            placeholder="Usuario ID"
-            value={filtros.usuarioId}
-            onChange={(e) => setFiltros({ ...filtros, usuarioId: e.target.value })}
+            type="text"
+            placeholder="Producto"
+            value={filtros.producto}
+            onChange={(e) => setFiltros({ ...filtros, producto: e.target.value })}
             className="min-w-[150px] border border-gray-300 rounded px-3 py-2 text-sm"
           />
-          <button onClick={fetchData} className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+          <input
+            type="text"
+            placeholder="Usuario"
+            value={filtros.usuario}
+            onChange={(e) => setFiltros({ ...filtros, usuario: e.target.value })}
+            className="min-w-[150px] border border-gray-300 rounded px-3 py-2 text-sm"
+          />
+          <button
+            className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
+            onClick={fetchData}
+            title="Buscar"
+          >
             <Search className="w-5 h-5" />
           </button>
           {puedeModificar && (
-            <button onClick={() => {
-              setMovimientoSeleccionado(null);
-              setMostrarModal(true);
-            }} className="bg-green-600 text-white p-2 rounded hover:bg-green-700">
+            <button
+              className="bg-green-600 text-white p-2 rounded hover:bg-green-700 transition"
+              onClick={() => {
+                setMovimientoSeleccionado(null);
+                setMostrarModal(true);
+              }}
+              title="Nuevo Movimiento"
+            >
               <Plus className="w-5 h-5" />
             </button>
           )}
@@ -96,37 +116,38 @@ const MovementStockTable = ({ user }: { user: Usuario }) => {
               <th className="px-4 py-3">Tipo</th>
               <th className="px-4 py-3">Cantidad</th>
               <th className="px-4 py-3">Fecha</th>
-              <th className="px-4 py-3">Producto ID</th>
-              <th className="px-4 py-3">Usuario ID</th>
-              {puedeModificar && <th className="px-4 py-3">Acciones</th>}
-              {puedeEliminar && <th className="px-4 py-3"></th>}
+              <th className="px-4 py-3">Producto</th>
+              <th className="px-4 py-3">Usuario</th>
+              <th className="px-4 py-3">Observación</th>
+              {puedeModificar && <th className="px-4 py-3">Editar</th>}
+              {puedeEliminar && <th className="px-4 py-3">Eliminar</th>}
             </tr>
           </thead>
           <tbody className="text-gray-800">
             {movimientosPaginados.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-4 py-6 italic text-gray-500">
+                <td colSpan={8} className="px-4 py-6 italic text-gray-500">
                   No se encontraron movimientos.
                 </td>
               </tr>
             ) : (
               movimientosPaginados.map((mov) => (
-                <tr key={mov.id} className="even:bg-gray-50">
-                  <td className="px-4 py-3">{mov.id}</td>
-                  <td className="px-4 py-3">{mov.tipo}</td>
+                <tr key={mov.idMovimiento} className="even:bg-gray-50">
+                  <td className="px-4 py-3">{mov.idMovimiento}</td>
+                  <td className="px-4 py-3">{mov.tipoMovimiento}</td>
                   <td className="px-4 py-3">{mov.cantidad}</td>
-                  <td className="px-4 py-3">{new Date(mov.fecha).toLocaleDateString()}</td>
-                  <td className="px-4 py-3">{mov.productoId}</td>
-                  <td className="px-4 py-3">{mov.usuarioId}</td>
+                  <td className="px-4 py-3">{new Date(mov.fechaMovimiento).toLocaleDateString()}</td>
+                  <td className="px-4 py-3">{mov.nombreProducto}</td>
+                  <td className="px-4 py-3">{mov.realizadoPor}</td>
+                  <td className="px-4 py-3">{mov.observacion}</td>
                   {puedeModificar && (
-                    <td className="px-4 py-3 space-x-2">
+                    <td className="px-4 py-3">
                       <button
                         className="p-1 bg-yellow-400 text-white rounded hover:bg-yellow-500"
                         onClick={() => {
                           setMovimientoSeleccionado(mov);
                           setMostrarModal(true);
                         }}
-                        title="Editar"
                       >
                         <Pencil className="w-4 h-4" />
                       </button>
@@ -136,8 +157,7 @@ const MovementStockTable = ({ user }: { user: Usuario }) => {
                     <td className="px-4 py-3">
                       <button
                         className="p-1 bg-red-600 text-white rounded hover:bg-red-700"
-                        onClick={() => eliminarMovimiento(mov.id).then(fetchData)}
-                        title="Eliminar"
+                        onClick={() => eliminarMovimiento(mov.idMovimiento).then(fetchData)}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -184,7 +204,7 @@ const MovementStockTable = ({ user }: { user: Usuario }) => {
             <MovementForm
               initialData={movimientoSeleccionado || undefined}
               onClose={() => {
-                setMostrarModal(false);
+                setMostrarModal
                 setMovimientoSeleccionado(null);
               }}
               onSuccess={fetchData}

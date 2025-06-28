@@ -45,7 +45,7 @@ const CategoryForm = ({ onClose, onSuccess, initialData }: CategoryFormProps) =>
           <div>
             <label className="block text-sm font-medium text-gray-700">Nombre</label>
             <input
-              name="nombre"
+              name="nombreCategoria"
               value={form.nombreCategoria}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded px-3 py-2 text-sm"

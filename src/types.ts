@@ -45,14 +45,27 @@ export interface Producto {
   }
 
   export interface MovimientoStock {
-    id: number;
-    tipo: "ENTRADA" | "SALIDA";
+    idMovimiento: number;
+    nombreProducto: string;
+    tipoMovimiento: "INGRESO" | "SALIDA";
     cantidad: number;
-    fecha: string;
+    fechaMovimiento: string; // Puedes parsearlo con Date si lo necesitas
+    realizadoPor: string;
+    observacion: string;
     productoId: number;
     usuarioId: number;
-    // puedes agregar más campos si tu modelo lo requiere
+
   }
+
+  export interface MovimientoStockCrear {
+  idProducto: number;
+  tipoMovimiento: "INGRESO" | "SALIDA";
+  cantidad: number;
+  idUsuario: number;
+  observacion: string;
+}
+
+
 
   export interface Categoria {
     idCategoria?: number;

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { crearMovimiento, actualizarMovimiento } from "./services/api";
-import { MovimientoStock } from "./types";
+import { MovimientoStock, MovimientoStockCrear } from "./types";
 
 interface MovementFormProps {
   onClose: () => void;
@@ -11,47 +11,71 @@ interface MovementFormProps {
 const MovementForm = ({ onClose, onSuccess, initialData }: MovementFormProps) => {
   const [form, setForm] = useState<MovimientoStock>(
     initialData || {
-      id: 0,
-      tipo: "ENTRADA",
+      idMovimiento: 0,
+      nombreProducto: "",
+      tipoMovimiento: "INGRESO",
       cantidad: 0,
-      fecha: new Date().toISOString().slice(0, 10),
+      fechaMovimiento: new Date().toISOString(),
+      realizadoPor: "",
+      observacion: "",
       productoId: 0,
-      usuarioId: 0
+      usuarioId: 0,
     }
   );
 
   const handleSubmit = async () => {
-    if (initialData?.id) {
-      await actualizarMovimiento(initialData.id, form);
+  try {
+    if (initialData?.idMovimiento) {
+      const payload = {
+        idProducto: form.productoId,
+        tipoMovimiento: form.tipoMovimiento,
+        cantidad: form.cantidad,
+        idUsuario: form.usuarioId,
+        observacion: form.observacion,
+      };
+      await actualizarMovimiento(initialData.idMovimiento, payload);
     } else {
-      await crearMovimiento(form);
+      const payload = {
+        idProducto: form.productoId,
+        tipoMovimiento: form.tipoMovimiento,
+        cantidad: form.cantidad,
+        idUsuario: form.usuarioId,
+        observacion: form.observacion,
+      };
+      await crearMovimiento(payload);
     }
     onSuccess();
     onClose();
-  };
+  } catch (error) {
+    console.error("Error al registrar movimiento:", error);
+    alert("Ocurrió un error al guardar el movimiento.");
+  }
+};
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: name === "cantidad" || name === "productoId" || name === "usuarioId" ? +value : value });
+    setForm({ ...form, [name]: ["cantidad", "productoId", "usuarioId"].includes(name) ? +value : value });
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
       <div className="bg-white w-full max-w-md rounded-lg shadow-xl p-6 relative">
         <h2 className="text-lg font-semibold mb-4 text-gray-800">
-          {initialData ? "Actualizar Movimiento" : "Registrar Movimiento"}
+          {initialData ? "Actualizar Movimiento" : "Registrar Nuevo Movimiento"}
         </h2>
 
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Tipo de Movimiento</label>
             <select
-              name="tipo"
-              value={form.tipo}
+              name="tipoMovimiento"
+              value={form.tipoMovimiento}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
             >
-              <option value="ENTRADA">ENTRADA</option>
+              <option value="INGRESO">INGRESO</option>
               <option value="SALIDA">SALIDA</option>
             </select>
           </div>
@@ -63,43 +87,43 @@ const MovementForm = ({ onClose, onSuccess, initialData }: MovementFormProps) =>
               name="cantidad"
               value={form.cantidad}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
               placeholder="Cantidad"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Fecha</label>
-            <input
-              type="date"
-              name="fecha"
-              value={form.fecha}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Producto ID</label>
+            <label className="block text-sm font-medium text-gray-700">ID del Producto</label>
             <input
               type="number"
               name="productoId"
               value={form.productoId}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-              placeholder="ID del producto"
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+              placeholder="Producto ID"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Usuario ID</label>
+            <label className="block text-sm font-medium text-gray-700">ID del Usuario</label>
             <input
               type="number"
               name="usuarioId"
               value={form.usuarioId}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-              placeholder="ID del usuario"
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+              placeholder="Usuario ID"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Observación</label>
+            <textarea
+              name="observacion"
+              value={form.observacion}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+              placeholder="Observaciones"
             />
           </div>
         </div>
@@ -115,7 +139,7 @@ const MovementForm = ({ onClose, onSuccess, initialData }: MovementFormProps) =>
             onClick={handleSubmit}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium"
           >
-            {initialData ? "Actualizar" : "Crear"}
+            {initialData ? "Actualizar" : "Registrar"}
           </button>
         </div>
       </div>
@@ -124,4 +148,3 @@ const MovementForm = ({ onClose, onSuccess, initialData }: MovementFormProps) =>
 };
 
 export default MovementForm;
-  

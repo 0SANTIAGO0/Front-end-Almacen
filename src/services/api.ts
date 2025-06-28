@@ -1,6 +1,6 @@
 // api.ts
 import axios from "axios";
-import { Producto, Usuario, Proveedor, Pedido, PedidoCrear, MovimientoStock } from "../types"; // Asegúrate de tener la ruta correcta
+import { Producto, Usuario, Proveedor, Pedido, PedidoCrear, MovimientoStock, Categoria, MovimientoStockCrear } from "../types"; // Asegúrate de tener la ruta correcta
 
 const api = axios.create({
   baseURL: "http://localhost:8080/api",
@@ -32,10 +32,10 @@ export const actualizarPedido = (id: number, data: PedidoCrear) => api.put(`/ped
 export const eliminarPedido = (id: number) => api.delete(`/pedidos/${id}`);
 
 // MOVIMIENTOS STOCK
-export const getMovimientos = () => api.get<MovimientoStock[]>("/movimientos-stock");
-export const crearMovimiento = (data: MovimientoStock) => api.post("/movimientos-stock", data);
-export const actualizarMovimiento = (id: number, data: MovimientoStock) => api.put(`/movimientos-stock/${id}`, data);
-export const eliminarMovimiento = (id: number) => api.delete(`/movimientos-stock/${id}`);
+export const getMovimientos = () => api.get<MovimientoStock[]>("/movimientos");
+export const crearMovimiento = (data: MovimientoStockCrear) => api.post("/movimientos", data);
+export const actualizarMovimiento = (id: number, data: MovimientoStockCrear) => api.put(`/movimientos/${id}`, data);
+export const eliminarMovimiento = (id: number) => api.delete(`/movimientos/${id}`);
 
 // CATEGORIAS
 export const getCategorias = () => api.get<Categoria[]>("/categorias");
