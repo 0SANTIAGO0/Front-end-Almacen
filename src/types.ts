@@ -2,10 +2,12 @@ export interface Producto {
     idProducto?: number;
     nombreProducto: string;
     descripcion: string;
-    estado: boolean;  
+    estado: boolean;
     stockActual: number;
     stockMinimo: number;
     codigoPedido: number;
+    idMarca:number;
+    idCategoria:number;
   }
   
   export interface Usuario {
@@ -72,4 +74,10 @@ export interface Producto {
     nombreCategoria: string;
     descripcion: string;
   }
-  
+
+  export interface Marca {
+    idMarca?: number;
+    nombreMarca: string;
+    paisOrigen?: string;
+    estado?: string;
+  }

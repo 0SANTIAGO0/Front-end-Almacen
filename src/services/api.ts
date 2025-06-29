@@ -1,6 +1,6 @@
 // api.ts
 import axios from "axios";
-import { Producto, Usuario, Proveedor, Pedido, PedidoCrear, MovimientoStock, Categoria, MovimientoStockCrear } from "../types"; // Asegúrate de tener la ruta correcta
+import { Producto, Usuario, Proveedor, Pedido, PedidoCrear, MovimientoStock, Categoria, MovimientoStockCrear, Marca } from "../types"; // Asegúrate de tener la ruta correcta
 
 const api = axios.create({
   baseURL: "http://localhost:8080/api",
@@ -9,7 +9,12 @@ const api = axios.create({
 // PRODUCTOS
 export const getProductos = () => api.get<Producto[]>("/productos");
 export const crearProducto = (data: Producto) => api.post("/productos", data);
-export const actualizarProducto = (id: number, data: Producto) => api.put(`/productos/${id}`, data);
+export const actualizarProducto = (id: number, data: Producto) => {
+  return api.put(`/productos/${id}`, {
+    ...data,
+    idProducto: id  // Asegura que el ID venga también en el body
+  });
+};
 export const eliminarProducto = (id: number) => api.delete(`/productos/${id}`);
 
 // USUARIOS
@@ -42,3 +47,11 @@ export const getCategorias = () => api.get<Categoria[]>("/categorias");
 export const crearCategoria = (data: Categoria) => api.post("/categorias", data);
 export const actualizarCategoria = (id: number, data: Categoria) => api.put(`/categorias/${id}`, data);
 export const eliminarCategoria = (id: number) => api.delete(`/categorias/${id}`);
+
+// MARCAS
+export const getMarcas = () => api.get<Marca[]>("/marcas");
+export const getMarcaById = (id: number) => api.get<Marca>(`/marcas/${id}`);
+export const createMarca = (marca: Marca) => api.post("/marcas", marca);
+export const updateMarca = (id: number, marca: Marca) => api.put(`/marcas/${id}`, marca);
+export const deleteMarca = (id: number) => api.delete(`/marcas/${id}`);
+
