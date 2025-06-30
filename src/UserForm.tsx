@@ -84,7 +84,7 @@ const UserForm = ({ onClose, onSuccess, initialData }: UserFormProps) => {
             <label className="block text-sm font-medium text-gray-700">Contraseña</label>
             <input
               type="password"
-              name="contraseña"
+              name="contrasenia"
               value={form.contrasenia}
               onChange={handleChange}
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
@@ -98,11 +98,9 @@ const UserForm = ({ onClose, onSuccess, initialData }: UserFormProps) => {
               onChange={handleChange}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
             >
-              <option value="usuario">Usuario</option>
               <option value="supervisor">Supervisor</option>
               <option value="administrador">Administrador</option>
               <option value="almacenero">Almacenero</option>
-              <option value="gerente_almacen">Gerente de Almacén</option>
             </select>
           </div>
           <div className="flex items-center gap-2">
