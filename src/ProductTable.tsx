@@ -54,15 +54,30 @@ const ProductTable = ({ user }: { user: Usuario }) => {
         <div className="flex flex-wrap items-end gap-4">
           <div className="flex-1 min-w-[150px]">
             <label className="block text-sm font-medium text-gray-700 mb-1">ID</label>
-            <input type="text" className="w-full border px-3 py-2" value={filtros.id} onChange={(e) => setFiltros({ ...filtros, id: e.target.value })} />
+            <input 
+            type="text" 
+            placeholder="ID Producto"
+            className="w-full border px-3 py-2" 
+            value={filtros.id} 
+            onChange={(e) => setFiltros({ ...filtros, id: e.target.value })} />
           </div>
           <div className="flex-1 min-w-[150px]">
             <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
-            <input type="text" className="w-full border px-3 py-2" value={filtros.nombre} onChange={(e) => setFiltros({ ...filtros, nombre: e.target.value })} />
+            <input 
+            type="text" 
+            placeholder="Nombre de Producto"
+            className="w-full border px-3 py-2" 
+            value={filtros.nombre} 
+            onChange={(e) => setFiltros({ ...filtros, nombre: e.target.value })} />
           </div>
           <div className="flex-1 min-w-[150px]">
             <label className="block text-sm font-medium text-gray-700 mb-1">Stock Mínimo</label>
-            <input type="text" className="w-full border px-3 py-2" value={filtros.stock} onChange={(e) => setFiltros({ ...filtros, stock: e.target.value })} />
+            <input 
+            type="text" 
+            placeholder="Stock mínimo"
+            className="w-full border px-3 py-2" 
+            value={filtros.stock} 
+            onChange={(e) => setFiltros({ ...filtros, stock: e.target.value })} />
           </div>
           <button className="bg-blue-600 text-white p-2 rounded" onClick={fetchData} title="Buscar">
             <Search className="w-5 h-5" />

@@ -56,35 +56,50 @@ const MovementStockTable = ({ user }: { user: Usuario }) => {
     <div className="p-6 flex flex-col items-center gap-6">
       {/* Filtros */}
       <div className="w-[95%] bg-white p-4 rounded-2xl shadow-lg">
-        <div className="flex flex-wrap items-end gap-4">
-          <input
-            type="text"
-            placeholder="ID Movimiento"
-            value={filtros.id}
-            onChange={(e) => setFiltros({ ...filtros, id: e.target.value })}
-            className="min-w-[150px] border border-gray-300 rounded px-3 py-2 text-sm"
-          />
-          <input
-            type="text"
-            placeholder="Tipo Movimiento"
-            value={filtros.tipoMovimiento}
-            onChange={(e) => setFiltros({ ...filtros, tipoMovimiento: e.target.value })}
-            className="min-w-[150px] border border-gray-300 rounded px-3 py-2 text-sm"
-          />
-          <input
-            type="text"
-            placeholder="Producto"
-            value={filtros.producto}
-            onChange={(e) => setFiltros({ ...filtros, producto: e.target.value })}
-            className="min-w-[150px] border border-gray-300 rounded px-3 py-2 text-sm"
-          />
-          <input
-            type="text"
-            placeholder="Usuario"
-            value={filtros.usuario}
-            onChange={(e) => setFiltros({ ...filtros, usuario: e.target.value })}
-            className="min-w-[150px] border border-gray-300 rounded px-3 py-2 text-sm"
-          />
+        <div className="flex flex-wrap items-end gap-6">
+          <div className="flex-1 min-w-[250px]">
+              <label className="block text-sm font-medium text-gray-700 mb-1">ID</label>
+              <input
+                type="text"
+                placeholder="ID Movimiento"
+                value={filtros.id}
+                onChange={(e) => setFiltros({ ...filtros, id: e.target.value })}
+                className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+              />
+          </div>
+
+          <div className="flex-1 min-w-[250px]">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Mov.</label>    
+              <input
+                type="text"
+                placeholder="Tipo Movimiento"
+                value={filtros.tipoMovimiento}
+                onChange={(e) => setFiltros({ ...filtros, tipoMovimiento: e.target.value })}
+                className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+              />
+          </div>
+
+          <div className="flex-1 min-w-[250px]">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Producto</label>
+              <input
+                type="text"
+                placeholder="Producto"
+                value={filtros.producto}
+                onChange={(e) => setFiltros({ ...filtros, producto: e.target.value })}
+                className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+              />
+          </div>
+
+          <div className="flex-1 min-w-[250px]">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Usuarios</label>
+              <input
+                type="text"
+                placeholder="Usuario"
+                value={filtros.usuario}
+                onChange={(e) => setFiltros({ ...filtros, usuario: e.target.value })}
+                className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+              />
+          </div>
           <button
             className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
             onClick={fetchData}

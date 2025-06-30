@@ -37,8 +37,8 @@ const PedidosForm = ({ initialData, onClose, onSuccess,idUsuarioLogueado }: Pedi
     try {
       if (initialData) {
         // Actualizar pedido
-        formData.idPedido = initialData.idPedido
-        await actualizarPedido(initialData.idPedido, formData);
+        formData.idPedido = initialData.id
+        await actualizarPedido(initialData.id, formData);
       } else {
         // Crear nuevo pedido
         await crearPedido(formData);

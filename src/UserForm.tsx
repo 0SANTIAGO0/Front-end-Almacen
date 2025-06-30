@@ -14,7 +14,7 @@ const UserForm = ({ onClose, onSuccess, initialData }: UserFormProps) => {
       nombreUsuario: "",
       correo: "",
       contrasenia: "",
-      rol: "usuario",
+      rol: "supervisor",
       estado: true,
     }
   );

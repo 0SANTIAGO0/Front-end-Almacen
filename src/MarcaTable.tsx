@@ -95,7 +95,6 @@ const MarcaTable = ({ user, onOpenCreateModal, onEditMarca, refreshTrigger }: Ma
 
     return (
         <div className="p-6 flex flex-col items-center gap-6">
-            <h1 className="text-2xl font-bold mb-6">Listado de Marcas</h1> {/* Titulo de la tabla */}
             {/* Secci�n de Filtros */}
             <div className="w-[95%] bg-white p-4 rounded-2xl shadow-lg">
                 <div className="flex flex-wrap items-end gap-4">

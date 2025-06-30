@@ -12,7 +12,7 @@ type AppProps = {
 };
 
 const App = ({ user }: AppProps) => {
-  const [activeSection, setActiveSection] = useState<"home" | "usuarios" | "productos" | "proveedores" | "movimientos" | "categorias" | "almacen" | "marcas">("home");
+  const [activeSection, setActiveSection] = useState<"home" | "usuarios" | "productos" | "proveedores" | "movimientos" | "categorias" | "marcas">("home");
 
   return (
     <div className="flex h-screen font-sans">

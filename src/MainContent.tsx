@@ -6,7 +6,6 @@ import ProductTable from "./ProductTable";
 import SupplierTable from "./SupplierTable";
 import MovementStockTable from "./MovementStockTable";
 import CategoryTable from "./CategoryTable";
-import PedidosTable from "./PedidosTable";
 import MarcaTable from "./MarcaTable";
 
 // Formularios
@@ -131,13 +130,13 @@ const MainContent = ({ user, section }: Props) => {
     };
 
     const sectionTitle: Record<typeof section, string> = {
-        home: "Inicio",
-        usuarios: "Listado de Usuarios",
-        productos: "Listado de Productos",
-        proveedores: "Listado de Proveedores",
-        movimientos: "Listado de Movimientos de Stock",
-        categorias: "Listado de Categorías",
-        marcas: "Listado de Marcas",
+        home: "HOME",
+        usuarios: "LISTADO DE USARIOS",
+        productos: "LISTADO DE PRODUCTOS",
+        proveedores: "LISTADO DE PROVEEDORES",
+        movimientos: "LISTADO DE MOVIMIENTOS DE STOCK",
+        categorias: "LISTADO DE CATEGORÍAS",
+        marcas: "LISTADO DE MARCAS",
     };
 
     const userRole = user.rol?.toLowerCase() || "";
@@ -150,9 +149,9 @@ const MainContent = ({ user, section }: Props) => {
     return (
         <div className="flex-1 p-4">
             <div className="bg-white rounded-2xl shadow-lg p-6 h-full overflow-y-auto">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold">{sectionTitle[section]}</h2>
-                    {puedeCrearEnSeccionSuperior(section) && (
+                <div className="flex flex-col items-center mb-4">
+                    <h1 className="text-xl font-bold">{sectionTitle[section]}</h1>
+                   {/* {puedeCrearEnSeccionSuperior(section) && (
                         <button
                             onClick={() => {
                                 setShowCreate(true);
@@ -163,6 +162,7 @@ const MainContent = ({ user, section }: Props) => {
                             Crear Nuevo
                         </button>
                     )}
+                        */}
                 </div>
 
                 {renderTable()}
