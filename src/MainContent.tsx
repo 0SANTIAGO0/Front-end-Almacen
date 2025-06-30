@@ -36,7 +36,6 @@ type Props = {
     | "proveedores"
     | "movimientos"
     | "categorias"
-    | "almacen"
     | "marcas";
 };
 
@@ -83,8 +82,6 @@ const MainContent = ({ user, section }: Props) => {
                 return <MovementStockTable user={user} />;
             case "categorias":
                 return <CategoryTable user={user} />;
-            case "almacen":
-                return <PedidosTable user={user} />;
             case "marcas":
                 return (
                     <MarcaTable
@@ -140,7 +137,6 @@ const MainContent = ({ user, section }: Props) => {
         proveedores: "Listado de Proveedores",
         movimientos: "Listado de Movimientos de Stock",
         categorias: "Listado de Categorías",
-        almacen: "Listado de Pedidos",
         marcas: "Listado de Marcas",
     };
 

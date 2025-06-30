@@ -12,7 +12,7 @@ type Props = {
     // Define los tipos de secciones que Sidebar puede cambiar
     onSectionChange: (
         // Asegúrate de que todas tus secciones estén aquí, incluyendo "marcas" y "almacen"
-        section: "home" | "usuarios" | "productos" | "proveedores" | "movimientos" | "categorias" | "almacen" | "marcas"
+        section: "home" | "usuarios" | "productos" | "proveedores" | "movimientos" | "categorias" | "marcas"
     ) => void;
     activeSection: string; // La sección actualmente activa
 };
@@ -42,8 +42,7 @@ const Sidebar = ({ user, onSectionChange, activeSection }: Props) => {
         // o puedes dejarlos fijos si son para todos los roles.
         // Usé Tag para Categorias como en tu último código, y Warehouse para Movimientos/Almacen.
       
-        { label: "Movimientos", value: "movimientos", icon: <Warehouse className="w-4 h-4" /> },
-        { label: "Almacén", value: "almacen", icon: <Warehouse className="w-4 h-4" /> }, // Si "Almacén" es diferente de "Movimientos"
+        { label: "Movimientos", value: "movimientos", icon: <Warehouse className="w-4 h-4" /> }, // Si "Almacén" es diferente de "Movimientos"
 
         // Condicionalmente muestra "Proveedores" si el rol tiene acceso restringido
         ...(tieneAccesoRestricto
@@ -77,7 +76,7 @@ const Sidebar = ({ user, onSectionChange, activeSection }: Props) => {
                             // Al hacer clic, cambia la sección activa en el componente padre (App.tsx)
                             onClick={() =>
                                 // Casting a 'section' que incluye todos los posibles valores
-                                onSectionChange(item.value as "home" | "usuarios" | "productos" | "proveedores" | "almacen" | "marcas" | "movimientos" | "categorias")
+                                onSectionChange(item.value as "home" | "usuarios" | "productos" | "proveedores" | "marcas" | "movimientos" | "categorias")
                             }
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all
                 ${activeSection === item.value // Estilo para la sección activa
