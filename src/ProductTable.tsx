@@ -1,4 +1,3 @@
-// ProductTable.tsx
 import { useEffect, useState } from "react";
 import { getProductos, eliminarProducto } from "./services/api";
 import { Producto, Usuario } from "./types";
@@ -19,7 +18,7 @@ const ProductTable = ({ user }: { user: Usuario }) => {
       const res = await getProductos();
       const data = res.data;
       const filtrados = data.filter((producto: Producto) =>
-        (filtros.id === "" || producto.idProducto!.toString().includes(filtros.id)) &&
+        (filtros.id === "" || producto.idProducto?.toString().includes(filtros.id)) &&
         producto.nombreProducto.toLowerCase().includes(filtros.nombre.toLowerCase()) &&
         (filtros.stock === "" || producto.stockMinimo.toString().includes(filtros.stock))
       );
@@ -34,8 +33,8 @@ const ProductTable = ({ user }: { user: Usuario }) => {
     fetchData();
   }, []);
 
-  const puedeModificar = ["control_calidad", "supervisor", "almacenero", "administrador", "gerente_almacen"].includes(user.rol.toLowerCase());
-  const puedeEliminar = ["supervisor", "almacenero", "administrador", "gerente_almacen"].includes(user.rol.toLowerCase());
+  const puedeModificar = ["supervisor", "almacenero", "administrador"].includes(user.rol.toLowerCase());
+  const puedeEliminar = ["supervisor", "administrador"].includes(user.rol.toLowerCase());
 
   const indiceInicio = (paginaActual - 1) * productosPorPagina;
   const indiceFin = indiceInicio + productosPorPagina;
@@ -78,33 +77,44 @@ const ProductTable = ({ user }: { user: Usuario }) => {
 
       {/* Tabla */}
       <div className="w-[95%] bg-white rounded-2xl shadow-lg overflow-x-auto">
-        <table className="w-full text-sm text-center">
-          <thead className="bg-gray-100">
+        <table className="w-full text-sm text-center table-auto">
+          <thead className="bg-gray-100 text-gray-700 uppercase">
             <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Descripción</th>
-              <th>Estado</th>
-              <th>Stock Actual</th>
-              <th>Stock Mínimo</th>
-              {puedeModificar && <th>Editar</th>}
-              {puedeEliminar && <th>Eliminar</th>}
+              <th className="px-4 py-3">ID</th>
+              <th className="px-4 py-3">Nombre</th>
+              <th className="px-4 py-3">Descripción</th>
+              <th className="px-4 py-3">Categoría</th>
+              <th className="px-4 py-3">Marca</th>
+              <th className="px-4 py-3">Estado</th>
+              <th className="px-4 py-3">Stock Actual</th>
+              <th className="px-4 py-3">Stock Mínimo</th>
+             
+              {puedeModificar && <th className="px-4 py-3">Editar</th>}
+              {puedeEliminar && <th className="px-4 py-3">Eliminar</th>}
             </tr>
           </thead>
-          <tbody>
+          <tbody className="text-gray-800">
             {productosPaginados.length === 0 ? (
               <tr>
-                <td colSpan={7} className="p-4 text-gray-500">No se encontraron productos</td>
+                <td colSpan={9} className="p-4 text-gray-500">No se encontraron productos</td>
               </tr>
             ) : (
               productosPaginados.map((producto) => (
                 <tr key={producto.idProducto} className="even:bg-gray-50">
-                  <td>{producto.idProducto}</td>
-                  <td>{producto.nombreProducto}</td>
-                  <td>{producto.descripcion}</td>
-                  <td>{producto.estado === "ACTIVO" ? <span className="text-green-600">Activo</span> : <span className="text-red-500">Inactivo</span>}</td>
-                  <td>{producto.stockActual}</td>
-                  <td>{producto.stockMinimo}</td>
+                  <td className="px-4 py-3">{producto.idProducto}</td>
+                  <td className="px-4 py-3">{producto.nombreProducto}</td>
+                  <td className="px-4 py-3">{producto.descripcion}</td>
+                  <td className="px-4 py-3">{producto.nombreCategoria}</td>
+                  <td className="px-4 py-3">{producto.nombreMarca}</td>
+                  <td className="px-4 py-3">
+                      {/* Muestra el estado y aplica color seg�n el valor */}
+                      <span className={`font-semibold ${producto.estado === 'Activo' ? 'text-green-600' : 'text-red-500'}`}>
+                          {producto.estado}
+                      </span>
+                  </td>
+                  <td className="px-4 py-3">{producto.stockActual}</td>
+                  <td className="px-4 py-3">{producto.stockMinimo}</td>
+                 
                   {puedeModificar && (
                     <td>
                       <button className="bg-yellow-500 text-white p-1 rounded" onClick={() => { setProductoSeleccionado(producto); setMostrarModal(true); }}>
@@ -141,6 +151,7 @@ const ProductTable = ({ user }: { user: Usuario }) => {
         </button>
       </div>
 
+      {/* Modal de producto */}
       {mostrarModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
@@ -150,6 +161,7 @@ const ProductTable = ({ user }: { user: Usuario }) => {
                 setMostrarModal(false);
                 setProductoSeleccionado(null);
               }}
+              productosExistentes={productos} 
               onSuccess={fetchData}
             />
           </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-// CORRECCIÓN: Importamos 'updateMarca' de 'apiMarcas' para el soft delete, no 'deleteMarca'.
+// CORRECCIï¿½N: Importamos 'updateMarca' de 'apiMarcas' para el soft delete, no 'deleteMarca'.
 import { getMarcas, updateMarca } from "./services/api";
 import { Marca, Usuario } from "./types"; // Importa el tipo Marca y Usuario
 import { Search, Plus, Pencil, Trash2 } from "lucide-react"; // Iconos de Lucide React
@@ -16,28 +16,28 @@ const MarcaTable = ({ user, onOpenCreateModal, onEditMarca, refreshTrigger }: Ma
     const [filtros, setFiltros] = useState({ id: "", nombreMarca: "", paisOrigen: "", estado: "" }); // Filtros para marcas incluyendo estado
 
     const [paginaActual, setPaginaActual] = useState(1);
-    const marcasPorPagina = 10; // Cantidad de marcas a mostrar por página
+    const marcasPorPagina = 10; // Cantidad de marcas a mostrar por pï¿½gina
 
     const fetchData = useCallback(async () => {
         try {
             const res = await getMarcas(); // Obtiene todas las marcas del backend (incluidas las inactivas)
-            // AQUI: Este console.log te mostrará los datos que realmente se reciben del backend
+            // AQUI: Este console.log te mostrarï¿½ los datos que realmente se reciben del backend
             console.log("Datos de marcas recibidos en MarcaTable:", res.data);
 
-            // Filtra las marcas localmente según los valores de los filtros
+            // Filtra las marcas localmente segï¿½n los valores de los filtros
             const filtradas = res.data.filter((marca: Marca) =>
                 (filtros.id === "" || marca.idMarca?.toString().includes(filtros.id)) &&
                 (marca.nombreMarca.toLowerCase().includes(filtros.nombreMarca.toLowerCase())) &&
                 (filtros.paisOrigen === "" || (marca.paisOrigen && marca.paisOrigen.toLowerCase().includes(filtros.paisOrigen.toLowerCase()))) &&
-                // CORRECCIÓN EN EL FILTRO DE ESTADO: Usamos === para una coincidencia exacta de estado
+                // CORRECCIï¿½N EN EL FILTRO DE ESTADO: Usamos === para una coincidencia exacta de estado
                 (filtros.estado === "" || (marca.estado && filtros.estado.toLowerCase() === marca.estado.toLowerCase()))
             );
             setMarcas(filtradas); // Actualiza el estado de las marcas filtradas
-            setPaginaActual(1); // Reinicia a la primera página al aplicar nuevos filtros
-            console.log("Marcas filtradas para mostrar:", filtradas); // Muestra las marcas después de aplicar los filtros
+            setPaginaActual(1); // Reinicia a la primera pï¿½gina al aplicar nuevos filtros
+            console.log("Marcas filtradas para mostrar:", filtradas); // Muestra las marcas despuï¿½s de aplicar los filtros
         } catch (error) {
             console.error("Error al obtener marcas:", error);
-            // Aqui puedes añadir lógica para mostrar un mensaje de error en la Ui al usuario
+            // Aqui puedes aï¿½adir lï¿½gica para mostrar un mensaje de error en la Ui al usuario
         }
     }, [filtros]); // El fetchData depende de los filtros
 
@@ -46,49 +46,49 @@ const MarcaTable = ({ user, onOpenCreateModal, onEditMarca, refreshTrigger }: Ma
         fetchData();
     }, [filtros, fetchData, refreshTrigger]);
 
-    // Lógica de permisos (copia la lógica de tu ProductTable)
+    // Lï¿½gica de permisos (copia la lï¿½gica de tu ProductTable)
     const userRole = user?.rol?.toLowerCase() || ''; // Asegurarse de que user.rol no sea undefined
-    const puedeModificar = ["control_calidad", "supervisor", "almacenero", "administrador", "gerente_almacen"].includes(userRole);
-    const puedeEliminar = ["supervisor", "almacenero", "administrador", "gerente_almacen"].includes(userRole);
+    const puedeModificar = ["supervisor","administrador"].includes(userRole);
+    const puedeEliminar = ["supervisor","administrador"].includes(userRole);
 
-    // Lógica de paginación
+    // Lï¿½gica de paginaciï¿½n
     const indiceInicio = (paginaActual - 1) * marcasPorPagina;
     const indiceFin = indiceInicio + marcasPorPagina;
-    const marcasPaginadas = marcas.slice(indiceInicio, indiceFin); // Marcas para la página actual
-    const totalPaginas = Math.ceil(marcas.length / marcasPorPagina); // Cálculo del total de páginas
+    const marcasPaginadas = marcas.slice(indiceInicio, indiceFin); // Marcas para la pï¿½gina actual
+    const totalPaginas = Math.ceil(marcas.length / marcasPorPagina); // Cï¿½lculo del total de pï¿½ginas
 
-    // Función para cambiar la página actual
+    // Funciï¿½n para cambiar la pï¿½gina actual
     const cambiarPagina = (nuevaPagina: number) => { // Tipado explicito para 'nuevaPagina'
         if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
             setPaginaActual(nuevaPagina);
         }
     };
 
-    // CORRECCIÓN CLAVE AQUi: Manejador para "eliminar" una marca (cambiar a estado Inactivo)
+    // CORRECCIï¿½N CLAVE AQUi: Manejador para "eliminar" una marca (cambiar a estado Inactivo)
     const handleEliminarMarca = async (id: number | undefined) => { // Tipado explicito para 'id'
         if (id === undefined) {
             console.error("No se puede eliminar la marca: ID no definido.");
             return;
         }
-        if (window.confirm("¿Estás seguro de que quieres cambiar el estado de esta marca a 'Inactivo'?")) { // Mensaje adaptado a soft delete
+        if (window.confirm("ï¿½Estï¿½s seguro de que quieres cambiar el estado de esta marca a 'Inactivo'?")) { // Mensaje adaptado a soft delete
             try {
                 // Primero, busca la marca completa en el estado actual para obtener todos sus campos
                 const marcaToDelete = marcas.find(m => m.idMarca === id);
                 if (marcaToDelete) {
                     // Crea un nuevo objeto de marca con el estado cambiado a "Inactivo"
                     const updatedMarca = { ...marcaToDelete, estado: "Inactivo" };
-                    // Llama a 'updateMarca' para enviar una petición PUT y cambiar el estado en el backend
+                    // Llama a 'updateMarca' para enviar una peticiï¿½n PUT y cambiar el estado en el backend
                     await updateMarca(id, updatedMarca);
                     fetchData(); // Vuelve a cargar la lista para reflejar el cambio.
-                    // Si el filtro de "Estado" está en "Activo", la marca "Inactiva" desaparecerá.
-                    // Si está en "Todos", seguirá visible pero con el estado actualizado.
+                    // Si el filtro de "Estado" estï¿½ en "Activo", la marca "Inactiva" desaparecerï¿½.
+                    // Si estï¿½ en "Todos", seguirï¿½ visible pero con el estado actualizado.
                 } else {
                     console.error("Marca no encontrada en la lista para cambiar estado a inactivo.");
                 }
             } catch (error) {
                 console.error("Error al cambiar estado de marca a Inactivo:", error);
-                // Aqui puedes añadir una alerta o mensaje al usuario en caso de error
-                alert("Ocurrió un error al intentar cambiar el estado de la marca.");
+                // Aqui puedes aï¿½adir una alerta o mensaje al usuario en caso de error
+                alert("Ocurriï¿½ un error al intentar cambiar el estado de la marca.");
             }
         }
     };
@@ -96,7 +96,7 @@ const MarcaTable = ({ user, onOpenCreateModal, onEditMarca, refreshTrigger }: Ma
     return (
         <div className="p-6 flex flex-col items-center gap-6">
             <h1 className="text-2xl font-bold mb-6">Listado de Marcas</h1> {/* Titulo de la tabla */}
-            {/* Sección de Filtros */}
+            {/* Secciï¿½n de Filtros */}
             <div className="w-[95%] bg-white p-4 rounded-2xl shadow-lg">
                 <div className="flex flex-wrap items-end gap-4">
                     {/* Filtro por ID de Marca */}
@@ -140,12 +140,12 @@ const MarcaTable = ({ user, onOpenCreateModal, onEditMarca, refreshTrigger }: Ma
                             value={filtros.estado}
                             onChange={(e) => setFiltros({ ...filtros, estado: e.target.value })}
                         >
-                            <option value="">Todos</option> {/* Opción para mostrar todos los estados */}
+                            <option value="">Todos</option> {/* Opciï¿½n para mostrar todos los estados */}
                             <option value="Activo">Activo</option>
                             <option value="Inactivo">Inactivo</option>
                         </select>
                     </div>
-                    {/* Botón de Buscar */}
+                    {/* Botï¿½n de Buscar */}
                     <button
                         className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
                         onClick={fetchData}
@@ -153,7 +153,7 @@ const MarcaTable = ({ user, onOpenCreateModal, onEditMarca, refreshTrigger }: Ma
                     >
                         <Search className="w-5 h-5" />
                     </button>
-                    {/* Botón de Nueva Marca (solo si el usuario tiene permisos de modificación) */}
+                    {/* Botï¿½n de Nueva Marca (solo si el usuario tiene permisos de modificaciï¿½n) */}
                     {puedeModificar && (
                         <button
                             className="bg-green-600 text-white p-2 rounded hover:bg-green-700 transition"
@@ -195,7 +195,7 @@ const MarcaTable = ({ user, onOpenCreateModal, onEditMarca, refreshTrigger }: Ma
                                     <td className="px-4 py-3">{marca.nombreMarca}</td>
                                     <td className="px-4 py-3">{marca.paisOrigen}</td>
                                     <td className="px-4 py-3">
-                                        {/* Muestra el estado y aplica color según el valor */}
+                                        {/* Muestra el estado y aplica color segï¿½n el valor */}
                                         <span className={`font-semibold ${marca.estado === 'Activo' ? 'text-green-600' : 'text-red-500'}`}>
                                             {marca.estado}
                                         </span>
@@ -227,7 +227,7 @@ const MarcaTable = ({ user, onOpenCreateModal, onEditMarca, refreshTrigger }: Ma
                 </table>
             </div>
 
-            {/* Sección de Paginación */}
+            {/* Secciï¿½n de Paginaciï¿½n */}
             <div className="mt-4 flex justify-center items-center gap-2">
                 <button
                     onClick={() => cambiarPagina(paginaActual - 1)}

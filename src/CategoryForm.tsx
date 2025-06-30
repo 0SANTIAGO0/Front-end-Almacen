@@ -13,13 +13,20 @@ const CategoryForm = ({ onClose, onSuccess, initialData }: CategoryFormProps) =>
   const [form, setForm] = useState<Categoria>(
     initialData || {
       nombreCategoria: "",
-      descripcion: ""
+      descripcion: "",
+      estado: "Activo",
     }
   );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+
+    setForm(prev => ({
+      ...prev,
+      [name]: name === "estado"
+        ? value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
+        : value,
+    }));
   };
 
   const handleSubmit = async () => {
@@ -39,7 +46,9 @@ const CategoryForm = ({ onClose, onSuccess, initialData }: CategoryFormProps) =>
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-xl">
-        <h2 className="text-xl font-bold mb-4">{initialData ? "Editar Categoría" : "Nueva Categoría"}</h2>
+        <h2 className="text-xl font-bold mb-4">
+          {initialData ? "Editar Categoría" : "Nueva Categoría"}
+        </h2>
 
         <div className="space-y-4">
           <div>
@@ -62,6 +71,20 @@ const CategoryForm = ({ onClose, onSuccess, initialData }: CategoryFormProps) =>
               className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
               placeholder="Descripción"
             />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="estado" className="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+            <select
+              id="estado"
+              name="estado"
+              value={form.estado || ""}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="Activo">Activo</option>
+              <option value="Inactivo">Inactivo</option>
+            </select>
           </div>
         </div>
 

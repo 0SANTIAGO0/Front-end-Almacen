@@ -1,14 +1,16 @@
-export interface Producto {
-    idProducto?: number;
-    nombreProducto: string;
-    descripcion: string;
-    estado: boolean;
-    stockActual: number;
-    stockMinimo: number;
-    codigoPedido: number;
-    idMarca:number;
-    idCategoria:number;
+  export interface Producto {
+  idProducto?: number;
+  nombreProducto: string;
+  descripcion: string;
+  nombreMarca: string;
+  nombreCategoria: string;
+  estado: string;
+  stockActual: number;
+  stockMinimo: number;
+  idMarca: number;
+  idCategoria: number;
   }
+
   
   export interface Usuario {
     idUsuario?: number;
@@ -65,14 +67,13 @@ export interface Producto {
   cantidad: number;
   idUsuario: number;
   observacion: string;
-}
-
-
+  }
 
   export interface Categoria {
     idCategoria?: number;
     nombreCategoria: string;
     descripcion: string;
+    estado?: string;
   }
 
   export interface Marca {

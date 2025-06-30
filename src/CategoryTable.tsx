@@ -75,6 +75,7 @@ const CategoryTable = ({ user }: { user: Usuario }) => {
               <th className="px-4 py-3">ID</th>
               <th className="px-4 py-3">Nombre</th>
               <th className="px-4 py-3">Descripción</th>
+               <th className="px-4 py-3">Estado</th> {/* Columna Estado */}
               {puedeModificar && <th className="px-4 py-3">Acciones</th>}
             </tr>
           </thead>
@@ -89,6 +90,13 @@ const CategoryTable = ({ user }: { user: Usuario }) => {
                   <td className="px-4 py-3">{cat.idCategoria}</td>
                   <td className="px-4 py-3">{cat.nombreCategoria}</td>
                   <td className="px-4 py-3">{cat.descripcion}</td>
+                  <td className="px-4 py-3">
+                      {/* Muestra el estado y aplica color seg�n el valor */}
+                      <span className={`font-semibold ${cat.estado === 'Activo' ? 'text-green-600' : 'text-red-500'}`}>
+                          {cat.estado}
+                      </span>
+                  </td>
+
                   {puedeModificar && (
                     <td className="px-4 py-3 space-x-2">
                       <button

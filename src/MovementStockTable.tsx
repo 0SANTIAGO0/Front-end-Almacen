@@ -204,7 +204,7 @@ const MovementStockTable = ({ user }: { user: Usuario }) => {
             <MovementForm
               initialData={movimientoSeleccionado || undefined}
               onClose={() => {
-                setMostrarModal
+                setMostrarModal(false)
                 setMovimientoSeleccionado(null);
               }}
               onSuccess={fetchData}

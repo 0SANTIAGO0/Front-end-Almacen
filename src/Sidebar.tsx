@@ -23,7 +23,7 @@ const Sidebar = ({ user, onSectionChange, activeSection }: Props) => {
 
     // Define los roles que tienen acceso a secciones restringidas (Usuarios, Marcas, Proveedores, Almacen)
     // Añadimos "gerente_almacen" para ser consistentes con la lógica de MainContent
-    const rolesConPermisoRestricto = ["supervisor", "administrador", "almacenero", "gerente_almacen"];
+    const rolesConPermisoRestricto = ["supervisor", "administrador"];
     const tieneAccesoRestricto = rolesConPermisoRestricto.includes(rol);
 
     // Array de objetos que representan los elementos del menú de navegación
@@ -34,14 +34,14 @@ const Sidebar = ({ user, onSectionChange, activeSection }: Props) => {
             ? [{ label: "Usuarios", value: "usuarios", icon: <Users className="w-4 h-4" /> }]
             : []),
         // AÑADIDO: Condicionalmente muestra "Marcas" si el rol tiene acceso restringido
-        ...(tieneAccesoRestricto
-            ? [{ label: "Marcas", value: "marcas", icon: <Tag className="w-4 h-4" /> }] // Usa el ícono Tag
-            : []),
+        
+        { label: "Marcas", value: "marcas", icon: <Tag className="w-4 h-4" /> }, // Usa el ícono Tag   
+        { label: "Categorías", value: "categorias", icon: <Tag className="w-4 h-4" /> },
         { label: "Productos", value: "productos", icon: <Box className="w-4 h-4" /> },
         // CATEGORÍAS Y MOVIMIENTOS: Los hice condicionales si también necesitan acceso restringido,
         // o puedes dejarlos fijos si son para todos los roles.
         // Usé Tag para Categorias como en tu último código, y Warehouse para Movimientos/Almacen.
-        { label: "Categorías", value: "categorias", icon: <Tag className="w-4 h-4" /> },
+      
         { label: "Movimientos", value: "movimientos", icon: <Warehouse className="w-4 h-4" /> },
         { label: "Almacén", value: "almacen", icon: <Warehouse className="w-4 h-4" /> }, // Si "Almacén" es diferente de "Movimientos"
 

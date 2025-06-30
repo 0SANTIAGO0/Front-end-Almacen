@@ -15,6 +15,7 @@ import ProductForm from "./ProductForm";
 import SupplierForm from "./SupplierForm";
 import CategoryForm from "./CategoryForm";
 import MarcaForm from "./MarcaForm";
+import MovementForm from "./MovementForm";
 
 // Otros
 import Home from "./Home";
@@ -107,6 +108,13 @@ const MainContent = ({ user, section }: Props) => {
             case "proveedores":
                 return <SupplierForm onClose={() => setShowCreate(false)} onSuccess={onSuccess} />;
             case "movimientos":
+                return <MovementForm 
+                            initialData={undefined}
+                            onClose={() => {
+                            console.log("cerrando");
+                            setShowCreate(false);
+                                                }}
+                            onSuccess={onSuccess} />;
             case "categorias":
                 return <CategoryForm onClose={() => setShowCreate(false)} onSuccess={onSuccess} />;
             case "marcas":
@@ -138,8 +146,8 @@ const MainContent = ({ user, section }: Props) => {
 
     const userRole = user.rol?.toLowerCase() || "";
     const puedeCrearEnSeccionSuperior = (currentSection: string) => {
-        const rolesConPermiso = ["supervisor", "administrador", "gerente_almacen"];
-        const seccionesConBoton = ["usuarios", "productos", "proveedores", "marcas"];
+        const rolesConPermiso = ["supervisor", "administrador", "almacenero"];
+        const seccionesConBoton = ["usuarios", "productos", "proveedores", "marcas", "movimientos"];
         return rolesConPermiso.includes(userRole) && seccionesConBoton.includes(currentSection);
     };
 
