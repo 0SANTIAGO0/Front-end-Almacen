@@ -81,3 +81,13 @@
     paisOrigen?: string;
     estado?: string;
   }
+
+
+  export interface ProductoBajoStock {
+  idProducto: number;
+  nombreProducto: string;
+  nombreCategoria: string;
+  nombreMarca: string;
+  stockActual: number;
+  stockMinimo: number;
+}

@@ -25,6 +25,7 @@ import { Usuario, Marca } from "./types";
 // Estilos
 import "./index.css";
 import "./styles.css";
+import ReportsTable from "./ReportsTable";
 
 type Props = {
     user: Usuario;
@@ -35,7 +36,8 @@ type Props = {
     | "proveedores"
     | "movimientos"
     | "categorias"
-    | "marcas";
+    | "marcas"
+    | "reportes";
 };
 
 const MainContent = ({ user, section }: Props) => {
@@ -90,6 +92,8 @@ const MainContent = ({ user, section }: Props) => {
                         refreshTrigger={refreshMarcasTrigger}
                     />
                 );
+            case "reportes":
+                return <ReportsTable user={user} />;
             default:
                 return null;
         }
@@ -137,6 +141,7 @@ const MainContent = ({ user, section }: Props) => {
         movimientos: "LISTADO DE MOVIMIENTOS DE STOCK",
         categorias: "LISTADO DE CATEGORÍAS",
         marcas: "LISTADO DE MARCAS",
+        reportes: "LISTADO DE REPORTES",
     };
 
     const userRole = user.rol?.toLowerCase() || "";

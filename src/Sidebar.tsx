@@ -12,7 +12,7 @@ type Props = {
     // Define los tipos de secciones que Sidebar puede cambiar
     onSectionChange: (
         // Asegúrate de que todas tus secciones estén aquí, incluyendo "marcas" y "almacen"
-        section: "home" | "usuarios" | "productos" | "proveedores" | "movimientos" | "categorias" | "marcas"
+        section: "home" | "usuarios" | "productos" | "proveedores" | "movimientos" | "categorias" | "marcas" | "reportes"
     ) => void;
     activeSection: string; // La sección actualmente activa
 };
@@ -48,6 +48,10 @@ const Sidebar = ({ user, onSectionChange, activeSection }: Props) => {
         ...(tieneAccesoRestricto
             ? [{ label: "Proveedores", value: "proveedores", icon: <Truck className="w-4 h-4" /> }]
             : []),
+
+        ...(tieneAccesoRestricto
+        ? [{ label: "Reportes", value: "reportes", icon: <Truck className="w-4 h-4" /> }]
+        : []),
     ];
 
     // Función para manejar el cierre de sesión
