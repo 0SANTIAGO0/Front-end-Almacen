@@ -104,6 +104,14 @@ const ReportsTable = ({ user }: { user: Usuario }) => {
           >
             <Search className="w-5 h-5" />
           </button>
+          <button
+              onClick={() => {
+                window.open("http://localhost:8080/api/reportes/productos-bajo-stock/excel", "_blank");
+              }}
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+            >
+              Descargar Excel
+          </button>
         </div>
       </div>
 
